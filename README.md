@@ -1,2 +1,2 @@
 # DelilahResto-ACAMICA
-Tercer Proyecto ACAMICA - API de Reservas usando Node.js
+Tercer Proyecto ACAMICA - API de Reservas - Node.js
