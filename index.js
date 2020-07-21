@@ -1,5 +1,4 @@
 const express = require("express");
-var bodyParser = require("body-parser");
 
 const app = express();
 
@@ -9,12 +8,10 @@ const PORT = process.env.PORT || 3000;
 
 /* ################ MIDDLEWARES ############### */
 
+
 /* ################### RUTAS ################## */
 
 app.use(require('./rutas/rutas'));
-
-
-/* ################## PUBLIC ################## */
 
 /* ################## SERVER ################## */
 
