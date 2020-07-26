@@ -2,43 +2,44 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require("body-parser");
 
+/* ################## ------ ################## */
+
+
+
+
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
 
 const mysqlConnection = require('../DB/delilahDB');
 
 
-/* ############### CREAR USUARIO ############## */
-let crearUsuario = (req, res) => {
-    let { usuario, password, nombre_apellido, email, telefono, direccion_envio, administrador } = req.body;
-    let queryInsertUsuario = `INSERT INTO usuarios (usuario, password, nombre_apellido, email, telefono, direccion_envio, administrador) 
-        VALUES ('${usuario}', '${password}', '${nombre_apellido}', '${email}', '${telefono}', '${direccion_envio}', '${administrador}')`;
-
-    mysqlConnection.query(queryInsertUsuario, (err, result) => {
-        if (err) throw err;
-        console.log(result);
-        res.send('Usuario Guardado con Éxito');
-    });
-};
-
-
 /* ############## LISTAR USUARIOS ############# */
 let listarUsuarios = (req, res) => {
     mysqlConnection.query('SELECT * FROM usuarios', (err, result) => {
         if (!err) {
-            res.json(result);
+            res.status(200).send(result);
         } else {
             console.log(err);
         }
     })
 };
 
+/* ######### VALIDAR USUARIO EXISTENTE ######## */
+// let validarUsuarioExistente = (req, res) => {
+//     mysqlConnection.query('SELECT usuario FROM usuarios', (err, result) => {
+//         if (!err) {
+//             res.status(200).send(result);
+//         } else {
+//             console.log(err);
+//         }
+//     })
+// };
 
 /* ############# LISTAR PRODUCTOS ############# */
 let listarProductos = (req, res) => {
     mysqlConnection.query('SELECT * FROM productos', (err, result) => {
         if (!err) {
-            res.json(result);
+            res.status(200).send(result);
         } else {
             console.log(err);
         }
@@ -53,7 +54,7 @@ let listarProductosId = (req, res) => {
 
     mysqlConnection.query(queryProductos, (err, result) => {
         if (err) throw err;
-        res.send(result);
+        res.status(200).send(result);
     })
 }
 
@@ -67,7 +68,7 @@ let generarPedido = (req, res) => {
     mysqlConnection.query(queryInsertPedido, (err, result) => {
         if (err) throw err;
         console.log(result);
-        res.send('Pedido generado con Éxito!');
+        res.status(200).send('Pedido generado con Éxito!');
     });
 };
 
@@ -76,7 +77,7 @@ let generarPedido = (req, res) => {
 let listarPedidos = (req, res) => {
     mysqlConnection.query('SELECT * FROM pedidos', (err, result) => {
         if (!err) {
-            res.json(result);
+            res.status(200).send(result);
         } else {
             console.log(err);
         }
@@ -91,7 +92,7 @@ let listarPedidosUsuario = (req, res) => {
 
     mysqlConnection.query(queryPedidos, (err, result) => {
         if (err) throw err;
-        res.json(result);
+        res.status(200).send(result);
     })
 };
 
@@ -104,7 +105,7 @@ let actualizarEstadoPedido = (req, res) => {
 
     mysqlConnection.query(queryEstadoPedidos, (err, result) => {
         if (err) throw err;
-        res.send("Estado actualizado con Éxito!");
+        res.status(200).send("Estado actualizado con Éxito!");
     })
 };
 
@@ -118,7 +119,7 @@ let agregarProducto = (req, res) => {
     mysqlConnection.query(queryInsertProducto, (err, result) => {
         if (err) throw err;
         console.log(result);
-        res.send('Producto Guardado con Éxito');
+        res.status(200).send('Producto Guardado con Éxito');
     })
 };
 
@@ -131,7 +132,7 @@ let editarProducto = (req, res) => {
 
     mysqlConnection.query(queryActualizarProducto, (err, result) => {
         if (err) throw err;
-        res.send("Producto actualizado con Éxito!");
+        res.status(200).send("Producto actualizado con Éxito!");
     })
 };
 
@@ -143,18 +144,27 @@ let eliminarProducto = (req, res) => {
 
     mysqlConnection.query(queryEliminarProducto, (err, result) => {
         if (err) throw err;
-        res.send("Producto eliminado con Éxito!");
+        res.status(200).send("Producto eliminado con Éxito!");
+    })
+};
+
+
+function verificarDB(tabla, parametro) {
+    return new Promise((resolve, reject) => {
+        mysqlConnection.query(`SELECT ${parametro} FROM ${tabla}`, (err, result) => {
+            if (!err) reject(err)
+            resolve(result);
+        })
     })
 };
 
 
 /* ############################################ */
-/*               ESPORTAR MODULOS               */
+/*               EXPORTAR MODULOS               */
 /* ############################################ */
 
 module.exports = {
     listarUsuarios: listarUsuarios,
-    crearUsuario: crearUsuario,
     listarProductos: listarProductos,
     listarProductosId: listarProductosId,
     generarPedido: generarPedido,
@@ -163,5 +173,5 @@ module.exports = {
     actualizarEstadoPedido: actualizarEstadoPedido,
     agregarProducto: agregarProducto,
     editarProducto: editarProducto,
-    eliminarProducto: eliminarProducto
+    eliminarProducto: eliminarProducto,
 }

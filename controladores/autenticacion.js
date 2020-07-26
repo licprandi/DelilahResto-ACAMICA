@@ -1,106 +1,115 @@
 const jwt = require('jsonwebtoken');
-const config = require("../config");
 const bcrypt = require('bcrypt');
-const connection = require("../database");
 const saltRounds = 10;
+const controladores = require('../controladores/controladores');
 
-function registro(req, res) {
+const mysqlConnection = require('../DB/delilahDB');
+const secretauth = require('../JWT/jwt');
 
-    let user = req.body;
+/* ############### CREAR USUARIO ############## */
+let crearUsuario = (req, res) => {
+    let { usuario, password, nombre_apellido, email, telefono, direccion_envio } = req.body;
 
-    if(!user.userName || !user.password || !user.email) {
-        res.status(400).send("Faltan datos.");
-        return;
-    }
+    if (usuario && password && nombre_apellido && email && telefono && direccion_envio) {
+        bcrypt.hash(password, saltRounds, function (err, hash) {
+            if (err) {
+                res.status(500).send("No se pudo registrar el usuario");
+                return;
+            }
+            password = hash;
 
-    // TODO: ejecutar un select para ver si el userName esta siendo utilizado.
+            let queryInsertUsuario = `INSERT INTO usuarios (usuario, password, nombre_apellido, email, telefono, direccion_envio) 
+                    VALUES ('${usuario}', '${password}', '${nombre_apellido}', '${email}', '${telefono}', '${direccion_envio}')`;
 
-    // hashearle el pass
-    bcrypt.hash(user.password, saltRounds, function(err, hash) {
-        
-        if(err) {
-            res.status(500).send("No se pudo registrar el usuario");
-            return;
-        }
-        
-        user.password = hash;
-
-        // usuarios.push(user);
-        let query = `insert into usuarios (username, password) values ('${user.userName}', '${user.password}')`;
-        connection.query(query, function (error, results, fields) {
-            
-            if (error) throw error;
-            
-            res.send(user);
-            
-            //console.log('el resultado de la query es: ', results);
-            
-            //console.log('el resultado de la query es fields: ', fields);
+            mysqlConnection.query(queryInsertUsuario, (err, result) => {
+                if (err) throw err;
+                console.log(result);
+                res.status(200).send('Usuario guardado con Éxito');
+            });
         });
-    });
-}
+    } else {
+        res.status(400).send("Error al registrar el Usuario, faltan datos!");
+    };
+};
 
-function login(req, res) {
+/* ################ CREAR ADMIN ############### */
 
-    let nombreUsuario = req.body.userName;
+let crearAdmin = (req, res) => {
+    let { usuario, password, nombre_apellido, email, telefono, direccion_envio, administrador } = req.body;
+    if (usuario && password && nombre_apellido && email && telefono && direccion_envio && administrador) {
+        bcrypt.hash(password, saltRounds, function (err, hash) {
+            if (err) {
+                res.status(500).send("No se pudo registrar el usuario");
+                return;
+            }
+            password = hash;
+
+            let queryInsertAdmin = `INSERT INTO usuarios (usuario, password, nombre_apellido, email, telefono, direccion_envio, administrador) 
+                VALUES ('${usuario}', '${password}', '${nombre_apellido}', '${email}', '${telefono}', '${direccion_envio}', '${administrador}')`;
+
+            mysqlConnection.query(queryInsertAdmin, (err, result) => {
+                if (err) throw err;
+                console.log(result);
+                res.status(200).send('Usuario Administrador Guardado con Éxito');
+            });
+        });
+    } else {
+        res.status(400).send("Error al registrar el Usuario, faltan datos!");
+    }
+};
+
+/* ############## LOGIN USUARIOS ############## */
+
+let login = (req, res) => {
+    let usuario = req.body.usuario;
     let password = req.body.password;
 
-    // validar que el usuario exista.
-    //let usr = usuarios.find(x => x.userName == nombreUsuario);
+    let queryLogin = `SELECT id_usuario, usuario, password, administrador FROM usuarios WHERE usuario = '${usuario}'`;
 
-    let querySelect = `SELECT id, username, password FROM usuarios 
-    WHERE username = '${nombreUsuario}'`;
+    mysqlConnection.query(queryLogin, (err, result) => {
+        if (err) throw err;
 
-    connection.query(querySelect, function(error, result) {
-
-        if(error) throw error;
-
-        if(result.length == 0) {
-            res.status(400).send("Usuario o contraseña incorrectos.");
+        if (result.length == 0) {
+            res.status(400).send("El usuario o contraseña son Incorrectos!");
             return;
         }
-
-        bcrypt.compare(password, result[0].password, function(err, bcryptResult) {
-            
-            if(err) {
+        bcrypt.compare(password, result[0].password, function (err, bcryptResult) {
+            if (err) {
                 res.status(500).send("NO ES POSIBLE VALIDAR EL PASSWORD.");
                 return;
             }
-            
-            if(!bcryptResult) {
+            if (!bcryptResult) {
                 res.status(400).send("USUARIO O CONTRASEÑA INCORRECTO.");
                 return;
             }
-
             let payload = {
-                nombreUsuario: result[0].username,
-                idUsuario: result[0].id,
-                rol: 'administrador'
-                
+                usuario: result[0].usuario,
+                id_usuario: result[0].id_usuario,
+                administrador: result[0].administrador,
             }
-
+            console.log(payload);
+            
             // generar el token.
-            jwt.sign(payload, config.secretAuth, (error, token) => {
-        
-                if(error) {
+            jwt.sign(payload, secretauth, (err, token) => {
+                if (err) {
                     res.status(500).send("No es posible iniciar sesion.");
                     return;
                 }
-                
-                // xxxxxx.xxxxxxxxxxx.xxxxxx
                 let resultado = {
-                    usuario: result[0].username,
-                    token: token
+                    usuario: result[0].usuario,
+                    id_usuario: result[0].id_usuario,
+                    administrador: result[0].administrador,
+                    token: token,
                 };
-        
                 res.send(resultado);
             });
-
         });
-    });
+    })
 }
 
+
 module.exports = {
-    registro: registro,
+    crearUsuario: crearUsuario,
+    crearAdmin: crearAdmin,
     login: login
 }

@@ -1,4 +1,5 @@
 const express = require("express");
+const middleware = require ('./middlewares/middleware');
 
 const app = express();
 
@@ -12,6 +13,9 @@ const PORT = process.env.PORT || 3000;
 /* ################### RUTAS ################## */
 
 app.use(require('./rutas/rutas'));
+
+/* ################## ERRORES ################# */
+app.use(middleware.manejoDeErrores);
 
 /* ################## SERVER ################## */
 

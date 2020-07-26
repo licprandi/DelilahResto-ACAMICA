@@ -1,46 +1,52 @@
 const express = require('express');
 const router = express.Router();
 const bodyParser = require("body-parser");
-const controladores = require('../controladores/controladores')
+const controladores = require('../controladores/controladores');
+const autenticacion = require('../controladores/autenticacion');
+const middleware = require ('../middlewares/middleware');
 
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
 
 
-const mysqlConnection = require('../DB/delilahDB');
-
 
 /* ############### NUEVO USUARIO ############## */
-router.post('/usuarios', controladores.crearUsuario);
+router.post('/usuarios', autenticacion.crearUsuario);
+
+/* ################ NUEVO ADMIN ############### */
+router.post('/admin', autenticacion.crearAdmin);
+
+/* ################### LOGIN ################## */
+router.post('/login', autenticacion.login);
 
 /* ############## LISTAR USUARIOS ############# */
-router.get('/usuarios', controladores.listarUsuarios);
+router.get('/usuarios', [middleware.autenticado, middleware.soloAdministradores], controladores.listarUsuarios);
 
 /* ############# LISTAR PRODUCTOS ############# */
-router.get('/productos', controladores.listarProductos);
+router.get('/productos', middleware.autenticado, controladores.listarProductos);
 
 /* ########## LISTAR PRODUCTOS POR ID ######### */
-router.get('/productos/:id', controladores.listarProductosId);
+router.get('/productos/:id', middleware.autenticado, controladores.listarProductosId);
 
 /* ############## GENERAR PEDIDO ############## */
-router.post('/pedidos', controladores.generarPedido);
+router.post('/pedidos', [middleware.autenticado, middleware.validarIdUsuario], controladores.generarPedido);
 
 /* ############## LISTAR PEDIDOS ############## */
-router.get('/pedidos', controladores.listarPedidos);
+router.get('/pedidos', [middleware.autenticado, middleware.soloAdministradores], controladores.listarPedidos);
     
 /* ####### LISTAR PEDIDOS DE UN USUARIO ####### */
-router.get('/pedidos/:id', controladores.listarPedidosUsuario);
+router.get('/pedidos/:id', [middleware.autenticado, middleware.validarIdUsuario], controladores.listarPedidosUsuario);
 
 /* ######## ACTUALIZAR ESTADO DE PEDIDO ####### */
-router.patch('/pedidos/:id', controladores.actualizarEstadoPedido);
+router.patch('/pedidos/:id', [middleware.autenticado, middleware.soloAdministradores], controladores.actualizarEstadoPedido);
 
 /* ############ AGREGAR UN PRODUCTO ########### */
-router.post('/productos', controladores.agregarProducto);
+router.post('/productos', [middleware.autenticado, middleware.soloAdministradores], controladores.agregarProducto);
 
 /* ############## EDITAR PRODUCTO ############# */
-router.put('/productos/:id', controladores.editarProducto);
+router.put('/productos/:id', [middleware.autenticado, middleware.soloAdministradores], controladores.editarProducto);
 
 /* ########### ELIMINAR UN PRODUCTO ########### */
-router.delete('/productos/:id', controladores.eliminarProducto);
+router.delete('/productos/:id', [middleware.autenticado, middleware.soloAdministradores], controladores.eliminarProducto);
 
 module.exports = router;

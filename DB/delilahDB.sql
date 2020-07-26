@@ -7,17 +7,17 @@ USE delilahDB;
 CREATE TABLE IF NOT EXISTS usuarios (
   id_usuario INT PRIMARY KEY AUTO_INCREMENT,
   usuario VARCHAR (60) NOT NULL,
-  password VARCHAR (60) NOT NULL,
-  nombre_apellido VARCHAR(60) NOT NULL,
-  email VARCHAR(60) NOT NULL,
+  password VARCHAR (250) NOT NULL,
+  nombre_apellido VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL,
   telefono INT NOT NULL,
-  direccion_envio VARCHAR (60) NOT NULL,
+  direccion_envio VARCHAR (100) NOT NULL,
   administrador BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS productos (
   id_producto INT PRIMARY KEY AUTO_INCREMENT,
-  nombre VARCHAR (60) NOT NULL,
+  nombre VARCHAR (100) NOT NULL,
   precio FLOAT NOT NULL,
   descripcion VARCHAR (200) NOT NULL,
   item VARCHAR (100) NOT NULL
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS productos (
 
 CREATE TABLE IF NOT EXISTS estados (
 	id_estado INT PRIMARY KEY AUTO_INCREMENT,
-	descripcion VARCHAR(20) NOT NULL
+	descripcion VARCHAR(60) NOT NULL
 );
 
 
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS pedidos (
   fecha DATETIME NOT NULL DEFAULT NOW(),
   descripcion INT NOT NULL,
   estado INT NOT NULL DEFAULT 1,
-  metodo_pago VARCHAR (60) NOT NULL,
+  metodo_pago VARCHAR (100) NOT NULL,
   cantidad INT NOT NULL,
   total FLOAT NOT NULL,
   FOREIGN KEY(usuario) REFERENCES usuarios(id_usuario),
@@ -228,7 +228,6 @@ DROP TABLE pedidos
     "telefono": 444,
     "direccion_envio": "Calle 4 444",
     "administrador": 1,
-    "desactivado": 0
 
 
 /* ############### POST PEDIDOS ############### */
