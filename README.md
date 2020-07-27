@@ -17,11 +17,10 @@ Realizar Backend de una app de pedidos de comidas.
 
 # Documentación de la API
 
-
 ## Inicialización del Proyecto
 
 ### ---1--- Descargar Proyecto
-Clonar o descargar el Proyecto desde el siguiente link: 
+Clonar o descargar el Proyecto desde el siguiente link: https://github.com/licprandi/DelilahResto-ACAMICA.git
 
 ### ---2--- Instalar Dependencias
 Instalar dependencias utilizadas: npm install
