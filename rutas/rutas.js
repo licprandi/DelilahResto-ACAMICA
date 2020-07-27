@@ -30,7 +30,7 @@ router.get('/productos', middleware.autenticado, controladores.listarProductos);
 router.get('/productos/:id', middleware.autenticado, controladores.listarProductosId);
 
 /* ############## GENERAR PEDIDO ############## */
-router.post('/pedidos', [middleware.autenticado, middleware.validarIdUsuario], controladores.generarPedido);
+router.post('/pedidos', middleware.autenticado, controladores.generarPedido);
 
 /* ############## LISTAR PEDIDOS ############## */
 router.get('/pedidos', [middleware.autenticado, middleware.soloAdministradores], controladores.listarPedidos);

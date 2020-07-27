@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS usuarios
   password VARCHAR(250) NOT NULL,
   nombre_apellido VARCHAR(100) NOT NULL,
   email VARCHAR(100) NOT NULL,
-  telefono VARCHAR (60) INT NOT NULL,
+  telefono VARCHAR (60) NOT NULL,
   direccion_envio VARCHAR(100) NOT NULL,
   administrador BOOLEAN NOT NULL DEFAULT FALSE
 );

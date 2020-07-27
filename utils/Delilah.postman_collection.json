@@ -71,14 +71,7 @@
 					"type": "noauth"
 				},
 				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "",
-						"type": "text",
-						"disabled": true
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": "{\r\n    \"usuario\": \"usuario1\",\r\n    \"password\": \"password1\"\r\n}",

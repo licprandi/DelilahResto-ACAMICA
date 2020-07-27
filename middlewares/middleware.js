@@ -33,7 +33,7 @@ function autenticado(req, res, next) {
       res.status(500).send("Hubo un problema con la verificación! Por favor vuelva a ingresar.");
       return;
     }
-    // req.userInfo = payload;
+    req.userInfo = payload;
     next();
   });
 
