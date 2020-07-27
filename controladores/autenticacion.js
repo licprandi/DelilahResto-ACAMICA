@@ -7,7 +7,7 @@ const secretauth = require('../JWT/jwt');
 
 
 /* ############### CREAR USUARIO ############## */
-let crearUsuario = (req, res) => {
+function crearUsuario(req, res) {
     let { usuario, password, nombre_apellido, email, telefono, direccion_envio } = req.body;
 
     if (usuario && password && nombre_apellido && email && telefono && direccion_envio) {
@@ -34,7 +34,7 @@ let crearUsuario = (req, res) => {
 
 
 /* ################ CREAR ADMIN ############### */
-let crearAdmin = (req, res) => {
+function crearAdmin(req, res) {
     let { usuario, password, nombre_apellido, email, telefono, direccion_envio, administrador } = req.body;
     if (usuario && password && nombre_apellido && email && telefono && direccion_envio && administrador) {
         bcrypt.hash(password, saltRounds, function (err, hash) {
@@ -60,7 +60,7 @@ let crearAdmin = (req, res) => {
 
 
 /* ############## LOGIN USUARIOS ############## */
-let login = (req, res) => {
+function login(req, res) {
     let usuario = req.body.usuario;
     let password = req.body.password;
 

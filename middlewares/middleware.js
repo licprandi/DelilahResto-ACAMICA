@@ -4,11 +4,8 @@ const mysqlConnection = require('../DB/delilahDB');
 
 
 /* ############# MANEJO DE ERRORES ############ */
-
 function manejoDeErrores(error, req, res, next) {
   if (error) {
-
-    // loguearlo en un archivo.
     console.log("Trace del error", error);
     res.status(500).send("Ha ocurrido un error inesperado. Intente mas tarde.");
     return;
@@ -24,7 +21,6 @@ function autenticado(req, res, next) {
     res.status(401).send("No tiene autorización!");
     return;
   }
-
   let token = auth.split(" ")[1];
 
   if (!token) {
@@ -40,7 +36,6 @@ function autenticado(req, res, next) {
     req.userInfo = payload;
     next();
   });
-
 }
 
 

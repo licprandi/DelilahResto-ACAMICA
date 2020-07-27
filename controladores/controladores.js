@@ -7,7 +7,7 @@ router.use(bodyParser.urlencoded({ extended: false }));
 const mysqlConnection = require('../DB/delilahDB');
 
 /* ############## LISTAR USUARIOS ############# */
-let listarUsuarios = (req, res) => {
+function listarUsuarios(req, res) {
     mysqlConnection.query('SELECT * FROM usuarios', (err, result) => {
         if (!err) {
             res.status(200).send(result);
@@ -17,9 +17,8 @@ let listarUsuarios = (req, res) => {
     })
 };
 
-
 /* ############# LISTAR PRODUCTOS ############# */
-let listarProductos = (req, res) => {
+function listarProductos(req, res) {
     mysqlConnection.query('SELECT * FROM productos', (err, result) => {
         if (!err) {
             res.status(200).send(result);
@@ -29,9 +28,8 @@ let listarProductos = (req, res) => {
     })
 };
 
-
 /* ########## LISTAR PRODUCTOS POR ID ######### */
-let listarProductosId = (req, res) => {
+function listarProductosId(req, res) {
     let id = req.params.id;
     let queryProductos = `SELECT t.id_producto, t.nombre, t.precio, t.descripcion, t.item FROM productos t WHERE id_producto = ${id}`;
 
@@ -41,9 +39,8 @@ let listarProductosId = (req, res) => {
     })
 }
 
-
 /* ############## GENERAR PEDIDO ############## */
-let generarPedido = (req, res) => {
+function generarPedido(req, res) {
     let { usuario, descripcion, metodo_pago, cantidad, total } = req.body;
     let queryInsertPedido = `INSERT INTO pedidos (usuario, descripcion, metodo_pago, cantidad, total) 
         VALUES ('${usuario}', '${descripcion}', '${metodo_pago}', '${cantidad}', '${total}')`;
@@ -55,9 +52,8 @@ let generarPedido = (req, res) => {
     });
 };
 
-
 /* ############## LISTAR PEDIDOS ############## */
-let listarPedidos = (req, res) => {
+function listarPedidos(req, res) {
     mysqlConnection.query('SELECT * FROM pedidos', (err, result) => {
         if (!err) {
             res.status(200).send(result);
@@ -67,9 +63,8 @@ let listarPedidos = (req, res) => {
     })
 };
 
-
 /* ####### LISTAR PEDIDOS DE UN USUARIO ####### */
-let listarPedidosUsuario = (req, res) => {
+function listarPedidosUsuario(req, res) {
     let id = req.params.id;
     let queryPedidos = `SELECT id_pedido, usuario, DATE_FORMAT(fecha, "%d %M %Y %T"), descripcion, estado, metodo_pago, cantidad, total FROM pedidos WHERE usuario = ${id}`;
 
@@ -79,9 +74,8 @@ let listarPedidosUsuario = (req, res) => {
     })
 };
 
-
 /* ######## ACTUALIZAR ESTADO DE PEDIDO ####### */
-let actualizarEstadoPedido = (req, res) => {
+function actualizarEstadoPedido(req, res) {
     let id = req.params.id;
     let estado = req.body.estado;
     let queryEstadoPedidos = `UPDATE pedidos SET estado = ${estado} WHERE usuario = ${id}`;
@@ -92,9 +86,8 @@ let actualizarEstadoPedido = (req, res) => {
     })
 };
 
-
 /* ############# AGREGAR PRODUCTO ############# */
-let agregarProducto = (req, res) => {
+function agregarProducto(req, res) {
     let { nombre, precio, descripcion, item } = req.body;
     let queryInsertProducto = `INSERT INTO productos (nombre, precio, descripcion, item) 
         VALUES ('${nombre}', '${precio}', '${descripcion}', '${item}')`;
@@ -106,9 +99,8 @@ let agregarProducto = (req, res) => {
     })
 };
 
-
 /* ############## EDITAR PRODUCTO ############# */
-let editarProducto = (req, res) => {
+function editarProducto(req, res) {
     let id = req.params.id;
     let { nombre, precio, descripcion, item } = req.body;
     let queryActualizarProducto = `UPDATE productos SET nombre = '${nombre}', precio = ${precio}, descripcion = '${descripcion}', item = '${item}' WHERE id_producto = ${id}`;
@@ -119,9 +111,8 @@ let editarProducto = (req, res) => {
     })
 };
 
-
 /* ############# ELIMINAR PRODUCTO ############ */
-let eliminarProducto = (req, res) => {
+function eliminarProducto(req, res) {
     let id = req.params.id;
     let queryEliminarProducto = `DELETE FROM productos WHERE id_producto = ${id}`;
 

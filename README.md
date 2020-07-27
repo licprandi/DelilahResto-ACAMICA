@@ -37,8 +37,8 @@ Sección: ## CREAR TABLAS ##
 Incluir valores iniciales de ejemplo para tablas PRODUCTOS y ESTADOS incluidos en el archivo `/DB/delilaDB.sql`
 Sección: ## VALORES PARA TABLAS ##
 
-### ---6--- Password Base de datos
-Asegurarse de agregar la clave de acceso a la base de datos creada desde el archivo `/DB/delilahDB.js`.
+### ---6--- Usuario y Password Base de datos
+Asegurarse de agregar Usuario y Password de acceso a la base de datos creada. Archivo `/DB/delilahDB.js`.
 
 ### ---7--- Servidor
 Inicializar el servidor desde consola: node index.js
