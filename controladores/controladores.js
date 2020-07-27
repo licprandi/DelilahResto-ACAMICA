@@ -2,14 +2,9 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require("body-parser");
 
-/* ################## ------ ################## */
-
-
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
-
 const mysqlConnection = require('../DB/delilahDB');
-
 
 /* ############## LISTAR USUARIOS ############# */
 let listarUsuarios = (req, res) => {
@@ -135,8 +130,6 @@ let eliminarProducto = (req, res) => {
         res.status(200).send("Producto eliminado con Éxito!");
     })
 };
-
-
 
 
 /* ############################################ */

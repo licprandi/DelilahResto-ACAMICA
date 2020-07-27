@@ -20,7 +20,7 @@ Realizar Backend de una app de pedidos de comidas.
 ## Inicialización del Proyecto
 
 ### ---1--- Descargar Proyecto
-Clonar o descargar el Proyecto desde el siguiente link: https://github.com/licprandi/DelilahResto-ACAMICA.git
+Descargar el Proyecto desde el siguiente link: https://github.com/licprandi/DelilahResto-ACAMICA.git
 
 ### ---2--- Instalar Dependencias
 Instalar dependencias utilizadas: npm install
@@ -37,10 +37,13 @@ Sección: ## CREAR TABLAS ##
 Incluir valores iniciales de ejemplo para tablas PRODUCTOS y ESTADOS incluidos en el archivo `/DB/delilaDB.sql`
 Sección: ## VALORES PARA TABLAS ##
 
-### ---6--- Servidor
+### ---6--- Password Base de datos
+Asegurarse de agregar la clave de acceso a la base de datos creada desde el archivo `/DB/delilahDB.js`.
+
+### ---7--- Servidor
 Inicializar el servidor desde consola: node index.js
 
-### ---7--- Colección Postman
+### ---8--- Colección Postman
 Descargar Postman e importar la colección de endpoints para comenzar a utilizar la app desde el archivo `utils/Delilah.postman_collection.json` - (el modelo también está incluido en el archivo `/DB/delilaDB.sql` Sección: ## VALORES PARA POSTMAN ##)
 
 #### REFERENCIAS

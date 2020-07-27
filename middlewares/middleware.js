@@ -2,6 +2,9 @@ const jwt = require("jsonwebtoken");
 const secret = require("../JWT/jwt");
 const mysqlConnection = require('../DB/delilahDB');
 
+
+/* ############# MANEJO DE ERRORES ############ */
+
 function manejoDeErrores(error, req, res, next) {
   if (error) {
 
@@ -13,6 +16,7 @@ function manejoDeErrores(error, req, res, next) {
   next();
 }
 
+/* ########## AUTENTICADO DE USUARIO ########## */
 function autenticado(req, res, next) {
   let auth = req.headers.authorization;
 
@@ -39,6 +43,8 @@ function autenticado(req, res, next) {
 
 }
 
+
+/* ##### AUTENTICADO PARA ADMINISTRADORES ##### */
 function soloAdministradores(req, res, next) {
   if (req.userInfo.administrador != 1) {
     res.status(401).send("No tienes acceso para realizar esta consulta!");
@@ -48,6 +54,7 @@ function soloAdministradores(req, res, next) {
 }
 
 
+/* ############## VALIDAR USUARIO ############# */
 function validarIdUsuario(req, res, next) {
   let id = req.params.id;
 
@@ -60,7 +67,7 @@ function validarIdUsuario(req, res, next) {
 }
 
 /* ######### VALIDAR USUARIO EXISTENTE ######## */
-let validarUsuarioExistente = (req, res, next) => {
+function validarUsuarioExistente(req, res, next) {
   let usuario = req.body.usuario;
 
   mysqlConnection.query(`SELECT usuario FROM usuarios WHERE usuario = '${usuario}'`, (err, result) => {

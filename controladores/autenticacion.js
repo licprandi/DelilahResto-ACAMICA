@@ -5,6 +5,7 @@ const saltRounds = 10;
 const mysqlConnection = require('../DB/delilahDB');
 const secretauth = require('../JWT/jwt');
 
+
 /* ############### CREAR USUARIO ############## */
 let crearUsuario = (req, res) => {
     let { usuario, password, nombre_apellido, email, telefono, direccion_envio } = req.body;
@@ -102,14 +103,15 @@ let login = (req, res) => {
                     administrador: result[0].administrador,
                     token: token,
                 };
-                
                 res.send(resultado);
             });
         });
     })
 }
 
-
+/* ############################################ */
+/*               EXPORTAR MODULOS               */
+/* ############################################ */
 
 module.exports = {
     crearUsuario: crearUsuario,

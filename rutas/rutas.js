@@ -9,10 +9,8 @@ router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
 
 
-
 /* ############### NUEVO USUARIO ############## */
 router.post('/usuarios', middleware.validarUsuarioExistente, autenticacion.crearUsuario);
-
 
 /* ################ NUEVO ADMIN ############### */
 router.post('/admin',middleware.validarUsuarioExistente, autenticacion.crearAdmin);
