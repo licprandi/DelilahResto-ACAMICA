@@ -422,14 +422,14 @@
 			"response": []
 		},
 		{
-			"name": "Actualizar Estado Pedido / id (Admin)",
+			"name": "Actualizar Estado Pedido / idusuario (Admin)",
 			"request": {
 				"method": "PUT",
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer ",
-						"type": "text"
+						"type": "text",
+						"value": "Bearer "
 					}
 				],
 				"body": {
