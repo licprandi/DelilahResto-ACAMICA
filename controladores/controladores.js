@@ -5,8 +5,6 @@ const bodyParser = require("body-parser");
 /* ################## ------ ################## */
 
 
-
-
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
 
@@ -24,16 +22,6 @@ let listarUsuarios = (req, res) => {
     })
 };
 
-/* ######### VALIDAR USUARIO EXISTENTE ######## */
-// let validarUsuarioExistente = (req, res) => {
-//     mysqlConnection.query('SELECT usuario FROM usuarios', (err, result) => {
-//         if (!err) {
-//             res.status(200).send(result);
-//         } else {
-//             console.log(err);
-//         }
-//     })
-// };
 
 /* ############# LISTAR PRODUCTOS ############# */
 let listarProductos = (req, res) => {
@@ -149,14 +137,6 @@ let eliminarProducto = (req, res) => {
 };
 
 
-function verificarDB(tabla, parametro) {
-    return new Promise((resolve, reject) => {
-        mysqlConnection.query(`SELECT ${parametro} FROM ${tabla}`, (err, result) => {
-            if (!err) reject(err)
-            resolve(result);
-        })
-    })
-};
 
 
 /* ############################################ */

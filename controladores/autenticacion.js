@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-const controladores = require('../controladores/controladores');
 
 const mysqlConnection = require('../DB/delilahDB');
 const secretauth = require('../JWT/jwt');
@@ -24,7 +23,7 @@ let crearUsuario = (req, res) => {
             mysqlConnection.query(queryInsertUsuario, (err, result) => {
                 if (err) throw err;
                 console.log(result);
-                res.status(200).send('Usuario guardado con Éxito');
+                res.status(200).send('Usuario Creado con Éxito');
             });
         });
     } else {
@@ -32,8 +31,8 @@ let crearUsuario = (req, res) => {
     };
 };
 
-/* ################ CREAR ADMIN ############### */
 
+/* ################ CREAR ADMIN ############### */
 let crearAdmin = (req, res) => {
     let { usuario, password, nombre_apellido, email, telefono, direccion_envio, administrador } = req.body;
     if (usuario && password && nombre_apellido && email && telefono && direccion_envio && administrador) {
@@ -50,16 +49,16 @@ let crearAdmin = (req, res) => {
             mysqlConnection.query(queryInsertAdmin, (err, result) => {
                 if (err) throw err;
                 console.log(result);
-                res.status(200).send('Usuario Administrador Guardado con Éxito');
+                res.status(200).send('Usuario Administrador Creado con Éxito');
             });
         });
     } else {
-        res.status(400).send("Error al registrar el Usuario, faltan datos!");
+        res.status(400).send("Error al registrar el Administrador, faltan datos!");
     }
 };
 
-/* ############## LOGIN USUARIOS ############## */
 
+/* ############## LOGIN USUARIOS ############## */
 let login = (req, res) => {
     let usuario = req.body.usuario;
     let password = req.body.password;
@@ -75,32 +74,35 @@ let login = (req, res) => {
         }
         bcrypt.compare(password, result[0].password, function (err, bcryptResult) {
             if (err) {
-                res.status(500).send("NO ES POSIBLE VALIDAR EL PASSWORD.");
+                res.status(500).send("No es posible validar el password!");
                 return;
             }
             if (!bcryptResult) {
-                res.status(400).send("USUARIO O CONTRASEÑA INCORRECTO.");
+                res.status(400).send("USUARIO O CONTRASEÑA INCORRECTO");
                 return;
             }
+
+            // payload
             let payload = {
                 usuario: result[0].usuario,
                 id_usuario: result[0].id_usuario,
                 administrador: result[0].administrador,
             }
-            console.log(payload);
-            
-            // generar el token.
+
+            // token.
             jwt.sign(payload, secretauth, (err, token) => {
                 if (err) {
                     res.status(500).send("No es posible iniciar sesion.");
                     return;
                 }
+
                 let resultado = {
                     usuario: result[0].usuario,
                     id_usuario: result[0].id_usuario,
                     administrador: result[0].administrador,
                     token: token,
                 };
+                
                 res.send(resultado);
             });
         });
@@ -108,8 +110,9 @@ let login = (req, res) => {
 }
 
 
+
 module.exports = {
     crearUsuario: crearUsuario,
     crearAdmin: crearAdmin,
-    login: login
+    login: login,
 }

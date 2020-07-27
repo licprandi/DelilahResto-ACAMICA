@@ -11,10 +11,11 @@ router.use(bodyParser.urlencoded({ extended: false }));
 
 
 /* ############### NUEVO USUARIO ############## */
-router.post('/usuarios', autenticacion.crearUsuario);
+router.post('/usuarios', middleware.validarUsuarioExistente, autenticacion.crearUsuario);
+
 
 /* ################ NUEVO ADMIN ############### */
-router.post('/admin', autenticacion.crearAdmin);
+router.post('/admin',middleware.validarUsuarioExistente, autenticacion.crearAdmin);
 
 /* ################### LOGIN ################## */
 router.post('/login', autenticacion.login);
@@ -38,7 +39,7 @@ router.get('/pedidos', [middleware.autenticado, middleware.soloAdministradores],
 router.get('/pedidos/:id', [middleware.autenticado, middleware.validarIdUsuario], controladores.listarPedidosUsuario);
 
 /* ######## ACTUALIZAR ESTADO DE PEDIDO ####### */
-router.patch('/pedidos/:id', [middleware.autenticado, middleware.soloAdministradores], controladores.actualizarEstadoPedido);
+router.put('/pedidos/:id', [middleware.autenticado, middleware.soloAdministradores], controladores.actualizarEstadoPedido);
 
 /* ############ AGREGAR UN PRODUCTO ########### */
 router.post('/productos', [middleware.autenticado, middleware.soloAdministradores], controladores.agregarProducto);

@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const secret = require("../JWT/jwt");
+const mysqlConnection = require('../DB/delilahDB');
 
 function manejoDeErrores(error, req, res, next) {
   if (error) {
@@ -39,7 +40,6 @@ function autenticado(req, res, next) {
 }
 
 function soloAdministradores(req, res, next) {
-
   if (req.userInfo.administrador != 1) {
     res.status(401).send("No tienes acceso para realizar esta consulta!");
     return;
@@ -59,6 +59,22 @@ function validarIdUsuario(req, res, next) {
   }
 }
 
+/* ######### VALIDAR USUARIO EXISTENTE ######## */
+let validarUsuarioExistente = (req, res, next) => {
+  let usuario = req.body.usuario;
+
+  mysqlConnection.query(`SELECT usuario FROM usuarios WHERE usuario = '${usuario}'`, (err, result) => {
+    if (!err) {
+      if (result.length !== 0) {
+        res.status(400).send('El Nombre de Usuario ya existe! Por favor elija otro');
+      } else {
+        next();
+      }
+    } else {
+      console.log(err);
+    }
+  })
+};
 
 
 module.exports = {
@@ -66,4 +82,5 @@ module.exports = {
   autenticado: autenticado,
   soloAdministradores: soloAdministradores,
   validarIdUsuario: validarIdUsuario,
+  validarUsuarioExistente: validarUsuarioExistente,
 }
