@@ -48,4 +48,8 @@ router.put('/productos/:id', [middleware.autenticado, middleware.soloAdministrad
 /* ########### ELIMINAR UN PRODUCTO ########### */
 router.delete('/productos/:id', [middleware.autenticado, middleware.soloAdministradores], controladores.eliminarProducto);
 
+/* ############ ELIMINAR UN PEDIDO ############ */
+router.delete('/pedidos/:id', [middleware.autenticado, middleware.soloAdministradores], controladores.eliminarPedido);
+
+
 module.exports = router;

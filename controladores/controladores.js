@@ -123,6 +123,18 @@ function eliminarProducto(req, res) {
 };
 
 
+/* ############## ELIMINAR PEDIDO ############# */
+function eliminarPedido(req, res) {
+    let id = req.params.id;
+    let queryEliminarPedido = `DELETE FROM pedidos WHERE id_pedido = ${id}`;
+
+    mysqlConnection.query(queryEliminarPedido, (err, result) => {
+        if (err) throw err;
+        res.status(200).send("Pedido eliminado con Éxito!");
+    })
+};
+
+
 /* ############################################ */
 /*               EXPORTAR MODULOS               */
 /* ############################################ */
@@ -138,4 +150,5 @@ module.exports = {
     agregarProducto: agregarProducto,
     editarProducto: editarProducto,
     eliminarProducto: eliminarProducto,
+    eliminarPedido: eliminarPedido,
 }
