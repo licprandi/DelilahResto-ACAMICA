@@ -70,7 +70,7 @@ Descargar Postman e importar la colección de endpoints para comenzar a utilizar
     # POST Hacer Pedido
     # GET Listar Pedido de cada Usuario por Id de Usuario(ADMIN Y USUARIO DEL ID)
     # GET Listar todos los Pedidos (ADMIN)
-    # PUT Actualizar Estado del Pedido por Id de Usuario (ADMIN)
+    # PUT Actualizar Estado del Pedido por Id de Pedido (ADMIN)
     # DEL Borrar Pedido por Id del Pedido (ADMIN)
 
 
