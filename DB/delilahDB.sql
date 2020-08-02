@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS detalle_pedidos
   id_pedido INT NOT NULL,
   producto INT NOT NULL,
   cantidad INT NOT NULL,
-  FOREIGN KEY (id_pedido) REFERENCES pedidos (id_pedido),
+  FOREIGN KEY (id_pedido) REFERENCES pedidos (id_pedido) ON DELETE CASCADE,
   FOREIGN KEY (producto) REFERENCES productos (id_producto)
 );
 

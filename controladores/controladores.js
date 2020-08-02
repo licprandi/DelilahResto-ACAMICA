@@ -65,8 +65,6 @@ function generarPedido(req, res) {
                 });
             } else {
                 let idPedido = result.insertId;
-                console.log(result);
-
                 descripcion.forEach(detalle => {
 
                     let queryInsertDetallePedido = `INSERT INTO detalle_pedidos (id_pedido, producto, cantidad) 
@@ -206,7 +204,6 @@ function agregarProducto(req, res) {
 
     mysqlConnection.query(queryInsertProducto, (err, result) => {
         if (err) throw err;
-        console.log(result);
         res.status(200).send('Producto Guardado con Éxito');
     })
 };

@@ -30,9 +30,6 @@ router.get('/productos/:id', middleware.autenticado, controladores.listarProduct
 /* ############## GENERAR PEDIDO ############## */
 router.post('/pedidos', middleware.autenticado, controladores.generarPedido);
 
-// /* ############## GENERAR DETALLE PEDIDO ############## */
-// router.post('/detalles', controladores.detallePedido);
-
 /* ############## LISTAR PEDIDOS ############## */
 router.get('/pedidos', [middleware.autenticado, middleware.soloAdministradores], controladores.listarPedidos);
     
@@ -44,7 +41,6 @@ router.put('/pedidos/:id', [middleware.autenticado, middleware.soloAdministrador
 
 /* ############ AGREGAR UN PRODUCTO ########### */
 router.post('/productos', [middleware.autenticado, middleware.soloAdministradores], controladores.agregarProducto);
-
 
 /* ############## EDITAR PRODUCTO ############# */
 router.put('/productos/:id', [middleware.autenticado, middleware.soloAdministradores], controladores.editarProducto);
