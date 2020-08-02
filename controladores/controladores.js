@@ -41,22 +41,97 @@ function listarProductosId(req, res) {
 
 /* ############## GENERAR PEDIDO ############## */
 function generarPedido(req, res) {
-    let { usuario, descripcion, metodo_pago, cantidad, total } = req.body;
-    let queryInsertPedido = `INSERT INTO pedidos (usuario, descripcion, metodo_pago, cantidad, total) 
-        VALUES ('${usuario}', '${descripcion}', '${metodo_pago}', '${cantidad}', '${total}')`;
+    let { usuario, descripcion, metodo_pago } = req.body;
+    let totalGeneral = 0;
 
-    mysqlConnection.query(queryInsertPedido, (err, result) => {
-        if (err) throw err;
-        console.log(result);
-        res.status(200).send('Pedido generado con Éxito!');
+    descripcion.forEach((detalle) => {
+        let queryObtenerPrecio = `SELECT precio FROM productos WHERE id_producto = ${detalle.producto}`;
+        mysqlConnection.query(queryObtenerPrecio, (err, result) => {
+            if (err) throw err;
+            let totalProducto = result[0].precio * detalle.cantidad;
+            totalGeneral += totalProducto;
+        })
     });
-};
+
+    mysqlConnection.beginTransaction(function (err) {
+        if (err) throw err;
+
+        let queryInsertPedido = `INSERT INTO pedidos (usuario, metodo_pago, total) 
+            VALUES ('${usuario}', '${metodo_pago}', '${totalGeneral}')`;
+        mysqlConnection.query(queryInsertPedido, (err, result) => {
+            if (err) {
+                mysqlConnection.rollback(function () {
+                    throw err;
+                });
+            } else {
+                let idPedido = result.insertId;
+                console.log(result);
+
+                descripcion.forEach(detalle => {
+
+                    let queryInsertDetallePedido = `INSERT INTO detalle_pedidos (id_pedido, producto, cantidad) 
+                    VALUES ('${idPedido}', '${detalle.producto}', '${detalle.cantidad}')`;
+
+                    mysqlConnection.query(queryInsertDetallePedido, (err, result) => {
+                        if (err) {
+                            mysqlConnection.rollback(function () {
+                                throw err;
+                            });
+                        }
+                    })
+                });
+                mysqlConnection.commit(function (err) {
+                    if (err) {
+                        mysqlConnection.rollback(function () {
+                            throw err;
+                        });
+                    }
+                });
+                res.send('Pedido generado con Éxito!');
+            }
+        });
+    });
+}
 
 /* ############## LISTAR PEDIDOS ############## */
 function listarPedidos(req, res) {
-    mysqlConnection.query('SELECT * FROM pedidos', (err, result) => {
+    mysqlConnection.query('SELECT detalle_pedidos.id_pedido, pedidos.usuario, pedidos.fecha, pedidos.estado, detalle_pedidos.producto, detalle_pedidos.cantidad, pedidos.total FROM detalle_pedidos INNER JOIN pedidos ON detalle_pedidos.id_pedido = pedidos.id_pedido', (err, result) => {
         if (!err) {
-            res.status(200).send(result);
+            let objetoResultado = [];
+            result.forEach((pedidoBD) => {
+                let elPedidoNoEstaAgregado = true;
+
+                objetoResultado.forEach((pedidoYaAgregado) => {
+                    if (pedidoYaAgregado.id_pedido === pedidoBD.id_pedido) {
+                        elPedidoNoEstaAgregado = false;
+                        pedidoYaAgregado.descripcion.push(
+                            {
+                                producto: pedidoBD.producto,
+                                cantidad: pedidoBD.cantidad,
+                            }
+                        )
+                    }
+                })
+
+                if (elPedidoNoEstaAgregado) {
+                    const nuevoObjetoPedido = {
+                        id_pedido: pedidoBD.id_pedido,
+                        usuario: pedidoBD.usuario,
+                        fecha: pedidoBD.fecha,
+                        estado: pedidoBD.estado,
+                        descripcion: [],
+                        total: pedidoBD.total,
+                    }
+                    nuevoObjetoPedido.descripcion.push(
+                        {
+                            producto: pedidoBD.producto,
+                            cantidad: pedidoBD.cantidad,
+                        }
+                    )
+                    objetoResultado.push(nuevoObjetoPedido);
+                }
+            })
+            res.status(200).send(objetoResultado);
         } else {
             console.log(err);
         }
@@ -66,11 +141,48 @@ function listarPedidos(req, res) {
 /* ####### LISTAR PEDIDOS DE UN USUARIO ####### */
 function listarPedidosUsuario(req, res) {
     let id = req.params.id;
-    let queryPedidos = `SELECT id_pedido, usuario, DATE_FORMAT(fecha, "%d %M %Y %T"), descripcion, estado, metodo_pago, cantidad, total FROM pedidos WHERE usuario = ${id}`;
+    let queryPedidos = `SELECT detalle_pedidos.id_pedido, pedidos.usuario, pedidos.fecha, pedidos.estado, detalle_pedidos.producto, detalle_pedidos.cantidad, pedidos.total FROM detalle_pedidos INNER JOIN pedidos ON detalle_pedidos.id_pedido = pedidos.id_pedido WHERE pedidos.usuario = ${id}`;
 
     mysqlConnection.query(queryPedidos, (err, result) => {
-        if (err) throw err;
-        res.status(200).send(result);
+        if (!err) {
+            let objetoResultado = [];
+            result.forEach((pedidoBD) => {
+                let elPedidoNoEstaAgregado = true;
+
+                objetoResultado.forEach((pedidoYaAgregado) => {
+                    if (pedidoYaAgregado.id_pedido === pedidoBD.id_pedido) {
+                        elPedidoNoEstaAgregado = false;
+                        pedidoYaAgregado.descripcion.push(
+                            {
+                                producto: pedidoBD.producto,
+                                cantidad: pedidoBD.cantidad,
+                            }
+                        )
+                    }
+                })
+
+                if (elPedidoNoEstaAgregado) {
+                    const nuevoObjetoPedido = {
+                        id_pedido: pedidoBD.id_pedido,
+                        usuario: pedidoBD.usuario,
+                        fecha: pedidoBD.fecha,
+                        estado: pedidoBD.estado,
+                        descripcion: [],
+                        total: pedidoBD.total,
+                    }
+                    nuevoObjetoPedido.descripcion.push(
+                        {
+                            producto: pedidoBD.producto,
+                            cantidad: pedidoBD.cantidad,
+                        }
+                    )
+                    objetoResultado.push(nuevoObjetoPedido);
+                }
+            })
+            res.status(200).send(objetoResultado);
+        } else {
+            console.log(err);
+        }
     })
 };
 
@@ -78,7 +190,7 @@ function listarPedidosUsuario(req, res) {
 function actualizarEstadoPedido(req, res) {
     let id = req.params.id;
     let estado = req.body.estado;
-    let queryEstadoPedidos = `UPDATE pedidos SET estado = ${estado} WHERE usuario = ${id}`;
+    let queryEstadoPedidos = `UPDATE pedidos SET estado = ${estado} WHERE id_pedido = ${id}`;
 
     mysqlConnection.query(queryEstadoPedidos, (err, result) => {
         if (err) throw err;

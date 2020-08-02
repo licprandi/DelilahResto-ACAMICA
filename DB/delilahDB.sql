@@ -43,14 +43,21 @@ CREATE TABLE IF NOT EXISTS pedidos
   id_pedido INT PRIMARY KEY AUTO_INCREMENT,
   usuario INT NOT NULL,
   fecha DATETIME NOT NULL DEFAULT NOW(),
-  descripcion INT NOT NULL,
   estado INT NOT NULL DEFAULT 1,
   metodo_pago VARCHAR(100) NOT NULL,
-  cantidad INT NOT NULL,
   total FLOAT NOT NULL,
   FOREIGN KEY (usuario) REFERENCES usuarios (id_usuario),
-  FOREIGN KEY (estado) REFERENCES estados(id_estado),
-  FOREIGN KEY (descripcion) REFERENCES productos (id_producto)
+  FOREIGN KEY (estado) REFERENCES estados(id_estado)
+);
+
+CREATE TABLE IF NOT EXISTS detalle_pedidos
+(
+  id_detalle_pedido INT PRIMARY KEY AUTO_INCREMENT,
+  id_pedido INT NOT NULL,
+  producto INT NOT NULL,
+  cantidad INT NOT NULL,
+  FOREIGN KEY (id_pedido) REFERENCES pedidos (id_pedido),
+  FOREIGN KEY (producto) REFERENCES productos (id_producto)
 );
 
 
