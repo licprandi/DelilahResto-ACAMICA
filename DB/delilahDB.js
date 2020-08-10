@@ -2,7 +2,7 @@ const mysql = require('mysql');
 const mysqlconnection = mysql.createConnection({
     host: 'localhost',
     user: 'root', //Colocar usuario
-    password: 'fededb', //Colocar su clave
+    password: '', //Colocar su clave
     database: 'delilahdb'
 });
 
